@@ -3,6 +3,7 @@
 namespace ShiftechAfrica;
 
 use Illuminate\Contracts\Validation\ValidatesWhenResolved;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,10 +39,10 @@ class FormRequestServiceProvider extends ServiceProvider
      * Initialize the form request with data from the given request.
      *
      * @param FormRequest $form
-     * @param FormRequest $current
+     * @param Request $current
      * @return void
      */
-    protected function initializeRequest(FormRequest $form, FormRequest $current)
+    protected function initializeRequest(FormRequest $form, Request $current)
     {
         $files = $current->files->all();
         $files = is_array($files) ? array_filter($files) : $files;
