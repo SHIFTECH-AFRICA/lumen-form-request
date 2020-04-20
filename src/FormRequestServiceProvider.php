@@ -2,10 +2,11 @@
 
 namespace ShiftechAfrica;
 
-use Illuminate\Contracts\Validation\ValidatesWhenResolved;
+
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Validation\ValidatesWhenResolved;
 
 class FormRequestServiceProvider extends ServiceProvider
 {
@@ -29,7 +30,7 @@ class FormRequestServiceProvider extends ServiceProvider
         $this->app->afterResolving(ValidatesWhenResolved::class, function ($resolved) {
             $resolved->validate();
         });
-        $this->app->resolving(FormRequest::class, function ($request, $app) {
+        $this->app->resolving(LumenFormRequest::class, function ($request, $app) {
             $this->initializeRequest($request, $app['request']);
             $request->setContainer($app)->setRedirector($app->make(Redirector::class));
         });
@@ -38,11 +39,11 @@ class FormRequestServiceProvider extends ServiceProvider
     /**
      * Initialize the form request with data from the given request.
      *
-     * @param FormRequest $form
+     * @param LumenFormRequest $form
      * @param Request $current
      * @return void
      */
-    protected function initializeRequest(FormRequest $form, Request $current)
+    protected function initializeRequest(LumenFormRequest $form, Request $current)
     {
         $files = $current->files->all();
         $files = is_array($files) ? array_filter($files) : $files;

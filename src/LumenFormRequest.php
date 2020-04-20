@@ -5,6 +5,7 @@ namespace ShiftechAfrica;
 
 
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Contracts\Validation\ValidatesWhenResolved;
@@ -14,7 +15,7 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidatesWhenResolvedTrait;
 use Illuminate\Validation\ValidationException;
 
-class FormRequest extends Request implements ValidatesWhenResolved
+class LumenFormRequest extends Request implements ValidatesWhenResolved
 {
     use ValidatesWhenResolvedTrait;
 
@@ -71,6 +72,7 @@ class FormRequest extends Request implements ValidatesWhenResolved
      * Get the validator instance for the request.
      *
      * @return Validator
+     * @throws BindingResolutionException
      */
     protected function getValidatorInstance()
     {
@@ -214,7 +216,7 @@ class FormRequest extends Request implements ValidatesWhenResolved
      * Set the Validator instance.
      *
      * @param Validator $validator
-     * @return FormRequest
+     * @return LumenFormRequest
      */
     public function setValidator(Validator $validator)
     {

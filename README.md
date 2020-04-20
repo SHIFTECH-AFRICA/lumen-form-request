@@ -30,9 +30,9 @@ Next step is create your FormRequest and extends from `ShiftechAfrica\FormReques
 
 namespace App\Http\Requests;
 
-use ShiftechAfrica\FormRequest;
+use ShiftechAfrica\LumenFormRequest;
 
-class StoreDataRequest extends FormRequest
+class StoreDataRequest extends LumenFormRequest
 {
 	     /**
          * @return bool
