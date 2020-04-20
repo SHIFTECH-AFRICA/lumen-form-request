@@ -4,16 +4,18 @@
 namespace ShiftechAfrica;
 
 
-use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Contracts\Validation\ValidatesWhenResolved;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidatesWhenResolvedTrait;
-use Illuminate\Validation\ValidationException;
 
 class LumenFormRequest extends Request implements ValidatesWhenResolved
 {
@@ -25,48 +27,46 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
      * @var Container
      */
     protected $container;
-
     /**
      * The redirector instance.
      *
      * @var Redirector
      */
     protected $redirector;
-
     /**
      * The URI to redirect to if validation fails.
      *
      * @var string
      */
     protected $redirect;
-
     /**
      * The route to redirect to if validation fails.
      *
      * @var string
      */
     protected $redirectRoute;
-
     /**
      * The controller action to redirect to if validation fails.
      *
      * @var string
      */
     protected $redirectAction;
-
     /**
      * The key to be used for the view error bag.
      *
      * @var string
      */
     protected $errorBag = 'default';
-
     /**
-     * The validator instance.
+     * The input keys that should not be flashed on redirect.
      *
-     * @var Validator
+     * @var array
      */
-    protected $validator;
+    protected $dontFlash = ['password', 'password_confirmation'];
+    /**
+     * @var mixed
+     */
+    private $validator;
 
     /**
      * Get the validator instance for the request.
@@ -76,38 +76,12 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
      */
     protected function getValidatorInstance()
     {
-        if ($this->validator) {
-            return $this->validator;
-        }
-
         $factory = $this->container->make(ValidationFactory::class);
-
         if (method_exists($this, 'validator')) {
-            $validator = $this->container->call([$this, 'validator'], compact('factory'));
-        } else {
-            $validator = $this->createDefaultValidator($factory);
+            return $this->container->call([$this, 'validator'], compact('factory'));
         }
-
-        if (method_exists($this, 'withValidator')) {
-            $this->withValidator($validator);
-        }
-
-        $this->setValidator($validator);
-
-        return $this->validator;
-    }
-
-    /**
-     * Create the default validator instance.
-     *
-     * @param ValidationFactory $factory
-     * @return Validator
-     */
-    protected function createDefaultValidator(ValidationFactory $factory)
-    {
         return $factory->make(
-            $this->validationData(), $this->container->call([$this, 'rules']),
-            $this->messages(), $this->attributes()
+            $this->validationData(), $this->container->call([$this, 'rules']), $this->messages(), $this->attributes()
         );
     }
 
@@ -116,7 +90,7 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
      *
      * @return array
      */
-    public function validationData()
+    protected function validationData()
     {
         return $this->all();
     }
@@ -127,33 +101,13 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
      * @param Validator $validator
      * @return void
      *
-     * @throws ValidationException
+     * @throws HttpResponseException
      */
     protected function failedValidation(Validator $validator)
     {
-        throw (new ValidationException($validator))
-            ->errorBag($this->errorBag)
-            ->redirectTo($this->getRedirectUrl());
-    }
-
-    /**
-     * Get the URL to redirect to on a validation error.
-     *
-     * @return string
-     */
-    protected function getRedirectUrl()
-    {
-        $url = $this->redirector->getUrlGenerator();
-
-        if ($this->redirect) {
-            return $url->to($this->redirect);
-        } elseif ($this->redirectRoute) {
-            return $url->route($this->redirectRoute);
-        } elseif ($this->redirectAction) {
-            return $url->action($this->redirectAction);
-        }
-
-        return $url->previous();
+        throw new HttpResponseException($this->response(
+            $this->formatErrors($validator)
+        ));
     }
 
     /**
@@ -166,8 +120,7 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
         if (method_exists($this, 'authorize')) {
             return $this->container->call([$this, 'authorize']);
         }
-
-        return true;
+        return false;
     }
 
     /**
@@ -175,11 +128,90 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
      *
      * @return void
      *
-     * @throws AuthorizationException
+     * @throws HttpResponseException
      */
     protected function failedAuthorization()
     {
-        throw new AuthorizationException;
+        throw new UnauthorizedException($this->forbiddenResponse());
+    }
+
+    /**
+     * Get the proper failed validation response for the request.
+     *
+     * @param array $errors
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function response(array $errors)
+    {
+        if (($this->ajax() && !$this->pjax()) || $this->wantsJson()) {
+            return new JsonResponse($errors, 422);
+        }
+        return $this->redirector->to($this->getRedirectUrl())
+            ->withInput($this->except($this->dontFlash))
+            ->withErrors($errors, $this->errorBag);
+    }
+
+    /**
+     * Get the response for a forbidden operation.
+     *
+     * @return Response
+     */
+    public function forbiddenResponse()
+    {
+        return new Response('Forbidden', 403);
+    }
+
+    /**
+     * Format the errors from the given Validator instance.
+     *
+     * @param Validator $validator
+     * @return array
+     */
+    protected function formatErrors(Validator $validator)
+    {
+        return $validator->getMessageBag()->toArray();
+    }
+
+    /**
+     * Get the URL to redirect to on a validation error.
+     *
+     * @return string
+     */
+    protected function getRedirectUrl()
+    {
+        $url = $this->redirector->getUrlGenerator();
+        if ($this->redirect) {
+            return $url->to($this->redirect);
+        } elseif ($this->redirectRoute) {
+            return $url->route($this->redirectRoute);
+        } elseif ($this->redirectAction) {
+            return $url->action($this->redirectAction);
+        }
+        return $url->previous();
+    }
+
+    /**
+     * Set the Redirector instance.
+     *
+     * @param Redirector $redirector
+     * @return $this
+     */
+    public function setRedirector(Redirector $redirector)
+    {
+        $this->redirector = $redirector;
+        return $this;
+    }
+
+    /**
+     * Set the container implementation.
+     *
+     * @param Container $container
+     * @return $this
+     */
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
+        return $this;
     }
 
     /**
@@ -210,44 +242,5 @@ class LumenFormRequest extends Request implements ValidatesWhenResolved
     public function attributes()
     {
         return [];
-    }
-
-    /**
-     * Set the Validator instance.
-     *
-     * @param Validator $validator
-     * @return LumenFormRequest
-     */
-    public function setValidator(Validator $validator)
-    {
-        $this->validator = $validator;
-
-        return $this;
-    }
-
-    /**
-     * Set the Redirector instance.
-     *
-     * @param Redirector $redirector
-     * @return $this
-     */
-    public function setRedirector(Redirector $redirector)
-    {
-        $this->redirector = $redirector;
-
-        return $this;
-    }
-
-    /**
-     * Set the container implementation.
-     *
-     * @param Container $container
-     * @return $this
-     */
-    public function setContainer(Container $container)
-    {
-        $this->container = $container;
-
-        return $this;
     }
 }
