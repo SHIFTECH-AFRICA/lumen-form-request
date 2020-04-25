@@ -5,6 +5,7 @@ namespace ShiftechAfrica;
 use Illuminate\Support\ServiceProvider;
 use ShiftechAfrica\Commands\ConsoleMakeCommand;
 use ShiftechAfrica\Commands\ControllerMakeCommand;
+use ShiftechAfrica\Commands\EventMakeCommand;
 use ShiftechAfrica\Commands\FactoryMakeCommand;
 use ShiftechAfrica\Commands\KeyGenerateCommand;
 use ShiftechAfrica\Commands\ListenerMakeCommand;
@@ -22,6 +23,7 @@ use ShiftechAfrica\Commands\ServeCommand;
 use ShiftechAfrica\Commands\JobMakeCommand;
 use ShiftechAfrica\Commands\TestMakeCommand;
 use ShiftechAfrica\Commands\TinkerCommand;
+use ShiftechAfrica\Commands\ExceptionMakeCommand;
 
 class LumenMakeServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,8 @@ class LumenMakeServiceProvider extends ServiceProvider
         $this->commands(RequestMakeCommand::class);
         $this->commands(FactoryMakeCommand::class);
         $this->commands(KeyGenerateCommand::class);
+        $this->commands(EventMakeCommand::class);
+        $this->commands(ExceptionMakeCommand::class);
         $this->commands(ListenerMakeCommand::class);
         $this->commands(MailMakeCommand::class);
         $this->commands(OptimizeCommand::class);
