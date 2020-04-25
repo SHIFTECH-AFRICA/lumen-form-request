@@ -55,3 +55,7 @@ use Illuminate\Foundation\Http\FormRequest;
 * `make:exception {name}` - Makes a new exception class in Exceptions/
 * `make:event {name}` - Makes a new event class in Events/
 * `make:request {name}` - Makes a new request class in Http/Requests/
+
+```php
+##### And much more...
+```
