@@ -1,9 +1,16 @@
 {
     "name": "shiftechafrica/lumen-form-request",
-    "description": "Form request is a package for Lumen that lets developer validate form requests like Laravel does.",
+    "description": "Form request is a package for Lumen that lets developer validate form requests like Laravel does. The package also has artisan commands.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["lumen", "form-request", "validation"],
+    "keywords": [
+        "lumen",
+        "form-request",
+        "validation",
+        "middleware",
+        "jobs",
+        "controllers"
+    ],
     "authors": [
         {
             "name": "shiftechafrica",
