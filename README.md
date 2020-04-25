@@ -42,7 +42,7 @@ $app->register(ShiftechAfrica\FormRequestServiceProvider::class);
 ## Requests info
 In generated requests used FormRequest from this library. If you want migrate to Laravel framework, change use line in all generated requests
 ```php
-use ShiftechAfrica\LumenFormRequest; 
+use ShiftechAfrica\Requests\LumenFormRequest; 
 \\to
 use Illuminate\Foundation\Http\FormRequest;
 ```
