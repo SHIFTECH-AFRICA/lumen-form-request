@@ -1,7 +1,7 @@
 Lumen Form Request
 ==========
-[![packagist-badge](https://img.shields.io/packagist/v/shiftechafrica/lumen-form-request.svg)](https://packagist.org/packages/shiftechafrica/lumen-form-request)
-[![Total Downloads](https://poser.pugx.org/shiftechafrica/lumen-form-request/downloads)](https://packagist.org/packages/shiftechafrica/lumen-form-request)
+[![packagist-badge](https://img.shields.io/packagist/v/shiftechafrica/lumen-take-off.svg)](https://packagist.org/packages/shiftechafrica/lumen-take-off)
+[![Total Downloads](https://poser.pugx.org/shiftechafrica/lumen-take-off/downloads)](https://packagist.org/packages/shiftechafrica/lumen-take-off)
 
 ## Description
 A package built for lumen that ports most of the make commands from laravel.
@@ -15,7 +15,7 @@ Added:
 
 Just run the following in the root of your project
 ```shell
-> composer require shiftechafrica/lumen-make
+composer require shiftechafrica/lumen-take-off
 ```
 
 Uncomment line in bootstrap/app.php
@@ -26,11 +26,11 @@ $app->register(App\Providers\EventServiceProvider::class);
 Add line to bootstrap/app.php for enable generators
 ```php
 //for enable generator permanently
-$app->register(ShiftechAfrica\LumenMake\LumenMakeServiceProvider::class);
+$app->register(ShiftechAfrica\LumenMakeServiceProvider::class);
 
 //for enable generator in development mode
 if (env('APP_ENV') != 'production' || env('APP_ENV') == 'local') {
-    $app->register(ShiftechAfrica\LumenMake\LumenMakeServiceProvider::class);
+    $app->register(ShiftechAfrica\LumenMakeServiceProvider::class);
 }
 ```
 

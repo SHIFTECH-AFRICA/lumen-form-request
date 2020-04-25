@@ -1,5 +1,5 @@
 {
-    "name": "shiftechafrica/lumen-form-request",
+    "name": "shiftechafrica/lumen-take-off",
     "description": "Form request is a package for Lumen that lets developer validate form requests like Laravel does. The package also has artisan commands.",
     "type": "library",
     "license": "MIT",
