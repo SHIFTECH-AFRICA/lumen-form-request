@@ -3,6 +3,7 @@
 
 namespace ShiftechAfrica\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\ProcessUtils;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,7 +30,7 @@ class ServeCommand extends Command
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function handle()
     {

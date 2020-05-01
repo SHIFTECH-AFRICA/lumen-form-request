@@ -6,7 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use ShiftechAfrica\Commands\ConsoleMakeCommand;
 use ShiftechAfrica\Commands\ControllerMakeCommand;
 use ShiftechAfrica\Commands\EventMakeCommand;
+use ShiftechAfrica\Commands\ExceptionMakeCommand;
 use ShiftechAfrica\Commands\FactoryMakeCommand;
+use ShiftechAfrica\Commands\JobMakeCommand;
 use ShiftechAfrica\Commands\KeyGenerateCommand;
 use ShiftechAfrica\Commands\ListenerMakeCommand;
 use ShiftechAfrica\Commands\MailMakeCommand;
@@ -20,10 +22,8 @@ use ShiftechAfrica\Commands\ResourceMakeCommand;
 use ShiftechAfrica\Commands\RouteListCommand;
 use ShiftechAfrica\Commands\SeederMakeCommand;
 use ShiftechAfrica\Commands\ServeCommand;
-use ShiftechAfrica\Commands\JobMakeCommand;
 use ShiftechAfrica\Commands\TestMakeCommand;
 use ShiftechAfrica\Commands\TinkerCommand;
-use ShiftechAfrica\Commands\ExceptionMakeCommand;
 
 class LumenMakeServiceProvider extends ServiceProvider
 {

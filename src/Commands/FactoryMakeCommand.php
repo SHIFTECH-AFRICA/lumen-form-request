@@ -36,7 +36,7 @@ class FactoryMakeCommand extends GeneratorCommand
      */
     protected function getStub()
     {
-        return __DIR__.'/stubs/factory.stub';
+        return __DIR__ . '/stubs/factory.stub';
     }
 
     /**
@@ -49,8 +49,8 @@ class FactoryMakeCommand extends GeneratorCommand
     protected function buildClass($name)
     {
         $namespaceModel = $this->option('model')
-                        ? $this->qualifyClass($this->option('model'))
-                        : trim($this->rootNamespace(), '\\').'\\Model';
+            ? $this->qualifyClass($this->option('model'))
+            : trim($this->rootNamespace(), '\\') . '\\Model';
 
         $model = class_basename($namespaceModel);
 
@@ -70,7 +70,7 @@ class FactoryMakeCommand extends GeneratorCommand
     /**
      * Get the destination class path.
      *
-     * @param  string  $name
+     * @param string $name
      * @return string
      */
     protected function getPath($name)
@@ -79,7 +79,7 @@ class FactoryMakeCommand extends GeneratorCommand
             ['\\', '/'], '', $this->argument('name')
         );
 
-        return $this->laravel->databasePath()."/factories/{$name}.php";
+        return $this->laravel->databasePath() . "/factories/{$name}.php";
     }
 
     /**

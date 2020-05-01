@@ -2,14 +2,14 @@
 
 namespace ShiftechAfrica\Commands;
 
-use ClassPreloader\Factory;
-use Illuminate\Console\Command;
-use Illuminate\Support\Composer;
-use ClassPreloader\OutputWriter;
 use ClassPreloader\CodeGenerator;
-use Symfony\Component\Console\Input\InputOption;
 use ClassPreloader\Exception\VisitorExceptionInterface as V4VisitorException;
 use ClassPreloader\Exceptions\VisitorExceptionInterface as V3VisitorException;
+use ClassPreloader\Factory;
+use ClassPreloader\OutputWriter;
+use Illuminate\Console\Command;
+use Illuminate\Support\Composer;
+use Symfony\Component\Console\Input\InputOption;
 
 class OptimizeCommand extends Command
 {
